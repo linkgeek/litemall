@@ -35,7 +35,6 @@
       :hide-stock="true"
       :goods="skuGoods"
       :goodsId="goods.info.id"
-      :close-on-click-overlay="true"
       @buy-clicked="buyGoods"
       @add-cart="addCart"
     />

@@ -15,3 +15,7 @@ php artisan jwt:secret
 php artisan storage:link
 
 phpunit9 phpstorm版本需升级
+
+
+#提醒
+出现跨域问题看下nginx（nginx.htaccess）配置是否遗漏

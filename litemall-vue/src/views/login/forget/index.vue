@@ -27,7 +27,6 @@
 <script>
 import field from '@/components/field/';
 import fieldGroup from '@/components/field-group/';
-import { authRegisterCaptcha } from '@/api/api';
 
 export default {
   data() {
@@ -40,19 +39,10 @@ export default {
 
   methods: {
     submitCode() {
-      this.$router.push({ name: 'forgetReset', params: { mobile: this.mobile, code: this.code }});
+      this.$router.push({ name: 'forgetReset' });
     },
     getCode() {
       this.counting = true;
-		let data = {
-			mobile: this.mobile
-		};
-		authRegisterCaptcha(data).then(res => {
-			this.counting = true;
-		}).catch(error => {
-			alert(error.data.errmsg);
-			this.counting = true;
-		});
     },
     countdownend() {
       this.counting = false;

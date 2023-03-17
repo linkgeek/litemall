@@ -11,6 +11,10 @@ use App\Http\Controllers\Wx\GoodsController;
 use App\Http\Controllers\Wx\CouponController;
 use App\Http\Controllers\Wx\CartController;
 
+// 精选
+Route::get('home/index', [HomeController::class, 'index']); // 首页
+
+
 // 用户模块-用户
 Route::post('auth/register', [AuthController::class, 'register']); // 账号注册
 Route::post('auth/regCaptcha', [AuthController::class, 'regCaptcha']); // 获取 注册验证码
@@ -20,6 +24,9 @@ Route::post('auth/logout', [AuthController::class, 'logout']); // 账号登出
 Route::post('auth/reset', [AuthController::class, 'reset']); // 账号密码重置
 Route::post('auth/profile', [AuthController::class, 'profile']); // 账号修改
 Route::post('auth/captcha', [AuthController::class, 'regCaptcha']); // 验证码
+
+//
+Route::get('user/index', 'UserCtroller@index'); //个人页面用户相关信息
 
 // 用户模块-地址
 Route::get('address/list', [AddressController::class, 'list']); // 收货地址列表
@@ -92,7 +99,5 @@ Route::get('home/test', 'HomeController@test');
 //Route::any('feedback/submit', ''); //添加反馈
 
 
-Route::get('user/index', function () {
-    return response()->json(['msg' => '成功！'], 200);
-}); //个人页面用户相关信息
+
 //Route::any('issue/list', ''); //帮助信息

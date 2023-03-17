@@ -12,6 +12,13 @@ class HomeController extends WxController
 {
     protected $only = [];
 
+    public function index()
+    {
+        //优先从缓存中读取
+        //
+        return [];
+    }
+
     /**
      * 分享链接调整
      * @return RedirectResponse
