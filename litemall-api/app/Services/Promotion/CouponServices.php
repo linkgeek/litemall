@@ -245,4 +245,22 @@ class CouponServices extends BaseServices
         return true;
     }
 
+    /**
+     * @param int $userId
+     * @return array
+     * @throws BusinessException
+     */
+    public function queryByNew($userId = 0)
+    {
+        $input = PageInput::new();
+        $input->limit = 3;
+        if ($userId) {
+            $pageData = $this->mylist($userId, 0, $input);
+        } else {
+            $pageData = $this->list($input);
+        }
+
+        $pageData = $pageData->toArray();
+        return $pageData['data'] ?? [];
+    }
 }

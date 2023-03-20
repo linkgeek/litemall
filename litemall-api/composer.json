@@ -20,7 +20,9 @@
         "leonis/easysms-notification-channel": "^2.0",
         "simplesoftwareio/simple-qrcode": "~2",
         "tymon/jwt-auth": "^1.0",
-        "yansongda/laravel-pay": "~3.2.0"
+        "yansongda/laravel-pay": "~3.2.0",
+        "ext-redis": "*",
+        "ext-curl": "*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "2.8.2",

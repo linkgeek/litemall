@@ -10,6 +10,7 @@ use App\Models\Goods\GoodsProduct;
 use App\Models\Goods\GoodsSpecification;
 use App\Models\Goods\Issue;
 use App\Services\BaseServices;
+use App\Services\SystemServices;
 use Illuminate\Database\Eloquent\Builder;
 
 class GoodsServices extends BaseServices
@@ -19,13 +20,13 @@ class GoodsServices extends BaseServices
      * @param array $goodsIds
      * @return Goods[]|Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
-    public function getGoodsListByIds(array $goodsIds)
+    public function getGoodsListByIds(array $goodsIds, $columns = ['*'])
     {
         if (empty($goodsIds)) {
             return collect();
         }
 
-        return Goods::query()->whereIn('id', $goodsIds)->get();
+        return Goods::query()->whereIn('id', $goodsIds)->get($columns);
     }
 
     public function getGoods(int $goodsId)
@@ -164,4 +165,28 @@ class GoodsServices extends BaseServices
         return $product->cas();
     }
 
+    /**
+     * @throws \App\Exceptions\BusinessException
+     */
+    public function queryByNew()
+    {
+        $columns = ['id', 'name', 'brief', 'pic_url', 'is_new', 'is_hot', 'counter_price', 'retail_price'];
+        $input = GoodsListInput::new('add');
+        $input->isNew = true;
+        $input->limit = SystemServices::getInstance()->getNewLimit();
+        $goodsList = $this->listGoods($input, $columns);
+        $goodsList = $goodsList->toArray();
+        return $goodsList['data'] ?? [];
+    }
+
+    public function queryByHot()
+    {
+        $columns = ['id', 'name', 'brief', 'pic_url', 'is_new', 'is_hot', 'counter_price', 'retail_price'];
+        $input = GoodsListInput::new('add');
+        $input->isHot = true;
+        $input->limit = SystemServices::getInstance()->getHotLimit();
+        $goodsList = $this->listGoods($input, $columns);
+        $goodsList = $goodsList->toArray();
+        return $goodsList['data'] ?? [];
+    }
 }

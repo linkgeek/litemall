@@ -22,7 +22,7 @@ class GoodsListInput extends Input
     public function rules()
     {
         return [
-            'categoryId' => 'required|integer|digits_between:1,20',
+            'categoryId' => 'integer|digits_between:1,20',
             'brandId'    => 'integer|digits_between:1,20',
             'keyword'    => 'string',
             'isNew'      => 'boolean',
@@ -37,7 +37,7 @@ class GoodsListInput extends Input
     public function scene()
     {
         return [
-            'add' => ['categoryId', 'brandId'],
+            //'add' => ['categoryId', 'brandId'],
         ];
     }
 }

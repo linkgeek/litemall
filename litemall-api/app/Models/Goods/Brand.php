@@ -33,7 +33,7 @@ use App\Models\BaseModel;
 class Brand extends BaseModel
 {
     protected $casts = [
-        'floor_price' => 'folat',
+        //'floor_price' => 'folat',
     ];
 
 }

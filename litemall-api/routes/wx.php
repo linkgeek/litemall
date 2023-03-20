@@ -86,9 +86,11 @@ Route::get('order/detail', 'OrderController@detail'); // 订单详情
 
 # 分享图片跳转
 Route::get('home/redirectShareUrl', [HomeController::class, 'redirectShareUrl'])->name('home.redirectShareUrl');
-
 Route::get('home/test', 'HomeController@test');
 
+// 专题
+Route::get('topic/detail', 'TopicController@detail'); // 专题详情
+Route::get('topic/related', 'TopicController@related'); // 相关专题
 
 //Route::any('collect/list', ''); //收藏列表
 //Route::any('collect/addordelete', ''); //添加或取消收藏

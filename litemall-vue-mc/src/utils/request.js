@@ -15,15 +15,16 @@ service.interceptors.request.use(
         'Authorization'
       ) || ''}`;
     }
-    if (config.version === 'v2'){
-        config.baseURL = process.env.VUE_APP_BASE_API_V2
+
+    // if (config.version === 'v2'){
+    //     config.baseURL = process.env.VUE_APP_BASE_API_V2
         if (!config.headers['Authorization']) {
             config.headers['Authorization'] = `Bearer ${window.localStorage.getItem(
                 'Authorization'
             ) || ''}`;
         }
         // delete config.headers['X-Litemall-Token'];
-    }
+    // }
 
     return config;
   },

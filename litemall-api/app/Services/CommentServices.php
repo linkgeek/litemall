@@ -35,4 +35,15 @@ class CommentServices extends BaseServices
         });
         return ['count' => $comments->total(), 'data' => $data];
     }
+
+    public function hasCacheData($key)
+    {
+        $redis = redis();
+        $cacheData = $redis->get($key);
+        if (empty($cacheData)) {
+            return false;
+        }
+
+        return true;
+    }
 }

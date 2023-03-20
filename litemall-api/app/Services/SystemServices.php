@@ -55,6 +55,25 @@ class SystemServices extends BaseServices
         return (double)$this->get(self::LITEMALL_EXPRESS_FREIGHT_MIN);
     }
 
+    public function getBrandLimit()
+    {
+        return $this->get(self::LITEMALL_WX_INDEX_BRAND);
+    }
+
+    public function getNewLimit()
+    {
+        return $this->get(self::LITEMALL_WX_INDEX_NEW);
+    }
+
+    public function getHotLimit()
+    {
+        return $this->get(self::LITEMALL_WX_INDEX_HOT);
+    }
+
+    public function getTopicLimit() {
+        return $this->get(self::LITEMALL_WX_INDEX_TOPIC);
+    }
+
     public function get($key)
     {
         $value = System::query()->where('key_name', $key)->first(['key_value']);

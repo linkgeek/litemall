@@ -156,7 +156,7 @@ class WxController extends Controller
      */
     public function userId()
     {
-        return $this->user()->getAuthIdentifier();
+        return !empty($this->user()) ? $this->user()->getAuthIdentifier() : 0;
     }
 
 }

@@ -15,4 +15,12 @@ class CollectServices extends BaseServices
             ->where('type', Constant::COLLECT_TYPE_GOODS)
             ->count('id');
     }
+
+    public function count($id, $type, $userId)
+    {
+        return Collect::query()->where('user_id', $userId)
+            ->where('id', $id)
+            ->where('type', $type)
+            ->count('id');
+    }
 }

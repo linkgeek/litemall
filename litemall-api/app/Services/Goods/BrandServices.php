@@ -17,6 +17,13 @@ class BrandServices extends BaseServices
         return $query->paginate($limit, $columns, 'page', $page);
     }
 
+    public function getFront()
+    {
+        $result = $this->getBrandList(1, 4 , '', '');
+        $result = $result->toArray();
+        return $result['data'] ?? [];
+    }
+
     public function getBrand(int $id)
     {
         return Brand::query()->find($id);
