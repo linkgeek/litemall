@@ -23,130 +23,6 @@ class AuthController extends WxController
     protected $only = ['info', 'profile'];
 
     /**
-     * 获取用户信息
-     * @return JsonResponse
-     */
-    public function info()
-    {
-        $user = $this->user();
-        return $this->success([
-            'nickName' => $user->nickname,
-            'avatar' => $user->avatar,
-            'gender' => $user->gender,
-            'mobile' => $user->mobile,
-        ]);
-    }
-
-    /**
-     * 用户信息修改
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function profile(Request $request)
-    {
-        $user = $this->user();
-        $avatar = $request->input('avatar');
-        $gender = $request->input('gender');
-        $nickName = $request->input('nickname');
-        if (!empty($avatar)) {
-            $user->avatar = $avatar;
-        }
-        if (!empty($gender)) {
-            $user->gender = $gender;
-        }
-        if (!empty($nickName)) {
-            $user->nickname = $nickName;
-        }
-        $ret = $user->save();
-        return $this->failOrSuccess($ret, CodeResponse::UPDATED_FAIL);
-    }
-
-    /**
-     * 登出
-     * @return JsonResponse
-     */
-    public function logout()
-    {
-        Auth::guard('wx')->logout();
-        return $this->success();
-    }
-
-    /**
-     * 密码重置
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \App\Exceptions\BusinessException
-     */
-    public function reset(Request $request)
-    {
-        $password = $request->input('password');
-        $mobile = $request->input('mobile');
-        $code = $request->input('code');
-        if (empty($password) || empty($mobile) || empty($code)) {
-            return $this->fail(codeResponse::PARAM_ILLEGAL);
-        }
-
-        $isPass = UserServices::getInstance()->checkCaptcha($mobile, $code);
-        if (!$isPass) {
-            return $this->fail(CodeResponse::AUTH_CAPTCHA_UNMATCH);
-        }
-
-        $user = UserServices::getInstance()->getByMobile($mobile);
-        if (is_null($user)) {
-            return $this->fail(CodeResponse::AUTH_MOBILE_UNREGISTERED);
-        }
-
-        $user->password = Hash::make($password);
-        $ret = $user->save();
-        return $this->failOrSuccess($ret, CodeResponse::UPDATED_FAIL);
-    }
-
-    /**
-     * 登录
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function login(Request $request)
-    {
-        $userName = $request->input('username');
-        $password = $request->input('password');
-        if (empty($userName) || empty($password)) {
-            return $this->fail(CodeResponse::PARAM_ILLEGAL);
-        }
-
-        // 验证账号是否存在
-        $user = UserServices::getInstance()->getByUserName($userName);
-        if (is_null($user)) {
-            return $this->fail(CodeResponse::AUTH_INVALID_ACCOUNT);
-        }
-
-        // 密码验证
-        $isPass = Hash::check($password, $user->getAuthPassword());
-        if (!$isPass) {
-            return $this->fail(CodeResponse::AUTH_INVALID_ACCOUNT, '账号/密码有误');
-        }
-
-        // 更新登录信息
-        $user->last_login_time = now()->toDateTimeString();
-        $user->last_login_ip = $request->getClientIp();
-        if (!$user->save()) {
-            return $this->fail(CodeResponse::UPDATED_FAIL);
-        }
-
-        // 获取token
-        $token = Auth::guard('wx')->login($user);
-
-        // 组装数据并返回
-        return $this->success([
-            'token' => $token,
-            'userInfo' => [
-                'nickName' => $userName,
-                'avatarUrl' => $user->avatar,
-            ],
-        ]);
-    }
-
-    /**
      * 用户注册
      * @param Request $request
      * @return JsonResponse
@@ -247,5 +123,137 @@ class AuthController extends WxController
         // 发送短信
         UserServices::getInstance()->sendCaptchaMsg($mobile, $code);
         return $this->success($code);
+    }
+
+    /**
+     * 登录
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function login(Request $request)
+    {
+        $userName = $request->input('username');
+        $password = $request->input('password');
+        if (empty($userName) || empty($password)) {
+            return $this->fail(CodeResponse::PARAM_ILLEGAL);
+        }
+
+        // 验证账号是否存在
+        $user = UserServices::getInstance()->getByUserName($userName);
+        if (is_null($user)) {
+            return $this->fail(CodeResponse::AUTH_INVALID_ACCOUNT);
+        }
+
+        // 密码验证
+        $isPass = Hash::check($password, $user->getAuthPassword());
+        if (!$isPass) {
+            return $this->fail(CodeResponse::AUTH_INVALID_ACCOUNT, '账号/密码有误');
+        }
+
+        // 更新登录信息
+        $user->last_login_time = now()->toDateTimeString();
+        $user->last_login_ip = $request->getClientIp();
+        if (!$user->save()) {
+            return $this->fail(CodeResponse::UPDATED_FAIL);
+        }
+
+        // 登录成功生成token
+        $token = Auth::guard('wx')->login($user);
+
+        // 组装数据并返回
+        return $this->success([
+            'token' => $token,
+            'userInfo' => [
+                'nickName' => $userName,
+                'avatarUrl' => $user->avatar,
+            ],
+        ]);
+    }
+
+    public function refresh()
+    {
+        $refresh_token = Auth::guard('wx')->refresh();
+        return $this->success([
+            'token' => $refresh_token,
+        ]);
+    }
+
+    /**
+     * 登出
+     * @return JsonResponse
+     */
+    public function logout()
+    {
+        Auth::guard('wx')->logout();
+        return $this->success();
+    }
+
+    /**
+     * 获取用户信息
+     * @return JsonResponse
+     */
+    public function info()
+    {
+        $user = $this->user();
+        return $this->success([
+            'nickName' => $user->nickname,
+            'avatar' => $user->avatar,
+            'gender' => $user->gender,
+            'mobile' => $user->mobile,
+        ]);
+    }
+
+    /**
+     * 用户信息修改
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function profile(Request $request)
+    {
+        $user = $this->user();
+        $avatar = $request->input('avatar');
+        $gender = $request->input('gender');
+        $nickName = $request->input('nickname');
+        if (!empty($avatar)) {
+            $user->avatar = $avatar;
+        }
+        if (!empty($gender)) {
+            $user->gender = $gender;
+        }
+        if (!empty($nickName)) {
+            $user->nickname = $nickName;
+        }
+        $ret = $user->save();
+        return $this->failOrSuccess($ret, CodeResponse::UPDATED_FAIL);
+    }
+
+    /**
+     * 密码重置
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \App\Exceptions\BusinessException
+     */
+    public function reset(Request $request)
+    {
+        $password = $request->input('password');
+        $mobile = $request->input('mobile');
+        $code = $request->input('code');
+        if (empty($password) || empty($mobile) || empty($code)) {
+            return $this->fail(codeResponse::PARAM_ILLEGAL);
+        }
+
+        $isPass = UserServices::getInstance()->checkCaptcha($mobile, $code);
+        if (!$isPass) {
+            return $this->fail(CodeResponse::AUTH_CAPTCHA_UNMATCH);
+        }
+
+        $user = UserServices::getInstance()->getByMobile($mobile);
+        if (is_null($user)) {
+            return $this->fail(CodeResponse::AUTH_MOBILE_UNREGISTERED);
+        }
+
+        $user->password = Hash::make($password);
+        $ret = $user->save();
+        return $this->failOrSuccess($ret, CodeResponse::UPDATED_FAIL);
     }
 }

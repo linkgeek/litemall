@@ -23,6 +23,7 @@ class Authenticate extends Middleware
     }
 
     /**
+     * 重写认证失败逻辑
      * @param Request $request
      * @param  array  $guards
      * @throws BusinessException
@@ -33,6 +34,7 @@ class Authenticate extends Middleware
         if ($request->expectsJson() || in_array('wx', $guards)) {
             throw new BusinessException(CodeResponse::UN_LOGIN);
         }
+
         parent::unauthenticated($request, $guards);
     }
 }

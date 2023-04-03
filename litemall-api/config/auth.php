@@ -13,6 +13,7 @@ return [
     |
     */
 
+    // 默认守卫设置
     'defaults' => [
         'guard' => 'wx',
         'passwords' => 'users',
@@ -35,6 +36,7 @@ return [
     |
     */
 
+    // 守卫设置，看守器/路由组
     'guards' => [
         'web' => [
             'driver' => 'session',
@@ -50,6 +52,11 @@ return [
         'wx' => [
             'driver' => 'jwt',
             'provider' => 'users',
+        ],
+
+        'admin' => [
+            'driver' => 'jwt',
+            'provider' => 'admins'
         ]
     ],
 
@@ -70,16 +77,22 @@ return [
     |
     */
 
+    //
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => \App\Models\User\User::class,
+            'model' => App\Models\User\User::class,
         ],
 
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin\Admin::class,
+        ],
     ],
 
     /*

@@ -69,13 +69,17 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
         'deleted',
     ];
 
-    // 使用JWT会继承2个方法
+    /**
+     * 获取会储存到 jwt 声明中的标识
+     */
     public function getJWTIdentifier()
     {
+        // 返回主键
         return $this->getKey();
     }
 
     /**
+     * 返回要添加到 jwt 声明中的自定义键值对数组
      * @return array
      */
     public function getJWTCustomClaims()

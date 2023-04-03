@@ -26,7 +26,7 @@ Route::post('auth/profile', [AuthController::class, 'profile']); // 账号修改
 Route::post('auth/captcha', [AuthController::class, 'regCaptcha']); // 验证码
 
 //
-Route::get('user/index', 'UserCtroller@index'); //个人页面用户相关信息
+Route::get('user/index', 'UserController@index'); //个人页面用户相关信息
 
 // 用户模块-地址
 Route::get('address/list', [AddressController::class, 'list']); // 收货地址列表
